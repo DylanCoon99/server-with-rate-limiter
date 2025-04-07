@@ -26,9 +26,8 @@ Rate limiting Algorithms
 	- Token Bucket: Allows bursts of requests as long as there are tokens available, offering
 	more flexibility than the leaky bucket.
 
-
-	* Let's start with simply logging all requests
-
+	* Let's start with simply logging all requests (Done)
+	* I will implement the api limiter using the fixed window algorithm
 */
 
 
@@ -47,7 +46,7 @@ func CreateServer(port string) {
 	}
 
 
-	wrappedMux := middleware.NewLogger(serverMux)
+	wrappedMux := middleware.NewCustomHandler(serverMux)
 
 	Listen("localhost:" + port, wrappedMux)
 
@@ -55,7 +54,7 @@ func CreateServer(port string) {
 
 
 
-func Listen(port string, mux *middleware.Logger) {
+func Listen(port string, mux *middleware.CustomHandler) {
 
 	log.Printf("Listening on port: %v", SERVER.Addr)
 	log.Fatal(http.ListenAndServe(port, mux))
