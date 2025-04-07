@@ -37,7 +37,18 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func Get2Handler(w http.ResponseWriter, r *http.Request) {
+func GetHandler2(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	ctx := r.Context()
+
+	select {
+	case <-ctx.Done():
+		log.Printf("Client ctx ended. Error: %v", ctx.Err())
+		return
+	default:
+		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+		return
+	}
+
+
 }

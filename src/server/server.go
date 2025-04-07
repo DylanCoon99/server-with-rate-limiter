@@ -13,6 +13,7 @@ import (
 var SERVER *http.Server
 
 
+
 // API rate limiting
 /*
 
@@ -25,6 +26,9 @@ Rate limiting Algorithms
 	- Token Bucket: Allows bursts of requests as long as there are tokens available, offering
 	more flexibility than the leaky bucket.
 
+
+	* Let's start with simply logging all requests
+
 */
 
 
@@ -35,20 +39,25 @@ func CreateServer(port string) {
 	serverMux := http.NewServeMux()
 
 	// Put handle funcs here
-	serverMux.HandleFunc("GET /api/test", handlers.GetHandler)
+	serverMux.HandleFunc("GET /api/test", handlers.GetHandler2)
 
 	SERVER = &http.Server{
 		Addr: ":" + port,
 		Handler: serverMux,
 	}
 
+
+	wrappedMux := middleware.NewLogger(serverMux)
+
+	Listen("localhost:" + port, wrappedMux)
+
 }
 
 
 
-func Listen() {
+func Listen(port string, mux *middleware.Logger) {
 
 	log.Printf("Listening on port: %v", SERVER.Addr)
-	log.Fatal(SERVER.ListenAndServe())
+	log.Fatal(http.ListenAndServe(port, mux))
 
 }

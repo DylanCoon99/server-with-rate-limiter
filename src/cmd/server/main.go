@@ -13,6 +13,6 @@ func main() {
 	// create an instance of the server and start it here
 
 	server.CreateServer("8080")
-	server.Listen()
+
 
 }
